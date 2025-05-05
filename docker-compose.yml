@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  # MongoDB service
+  mongodb:
+    image: mongo:4.4
+    container_name: dooraccess-mongodb
+    restart: always
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=dooraccessapp
+      - MONGO_INITDB_ROOT_PASSWORD=dooraccesssecret
+    ports:
+      - "27017:27017"
+    networks:
+      - door-access-network
+
+  # Backend service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: dooraccess-backend
+    restart: always
+    depends_on:
+      - mongodb
+    ports:
+      - "8001:8001"
+    environment:
+      - NODE_ENV=production
+      - PORT=8001
+      - MONGO_URI=mongodb://dooraccessapp:dooraccesssecret@mongodb:27017/dooraccess?authSource=admin
+      - JWT_SECRET=defaultsecretkeyyoushouldchangethisinproduction
+      - JWT_EXPIRY=7d
+      - DOUBLE_VERIFICATION_DAYS=0
+      - ADMIN_EMAIL=admin@example.com
+      - ADMIN_PASSWORD=admin123
+    volumes:
+      - backend_data:/app/uploads
+    networks:
+      - door-access-network
+
+  # Frontend service
+  frontend:
+    build:
+      context: ./frontend/door-access-app
+      dockerfile: Dockerfile
+    container_name: dooraccess-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - door-access-network
+
+# Persistent volumes
+volumes:
+  mongodb_data:
+  backend_data:
+
+# Application network
+networks:
+  door-access-network:
+    driver: bridge

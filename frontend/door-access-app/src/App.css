@@ -1,0 +1,95 @@
+/* App.css */
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  text-align: center;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Keypad styling */
+.keypad-button {
+  font-size: 1.5rem !important;
+  height: 64px !important;
+}
+
+/* Camera container */
+.camera-container {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.camera-container video, 
+.camera-container canvas {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.camera-container canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Admin panel styles */
+.admin-layout {
+  display: flex;
+  height: 100vh;
+}
+
+.admin-content {
+  flex-grow: 1;
+  padding: 24px;
+  background-color: #f5f5f5;
+  overflow-y: auto;
+}
+
+/* Status indicators */
+.status-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.status-indicator.success {
+  color: #2e7d32;
+}
+
+.status-indicator.error {
+  color: #d32f2f;
+}
+
+/* Animation keyframes */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.pulse-animation {
+  animation: pulse 1.5s infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .keypad-button {
+    font-size: 1.2rem !important;
+    height: 56px !important;
+  }
+}
