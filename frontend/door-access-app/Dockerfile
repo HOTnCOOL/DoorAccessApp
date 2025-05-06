@@ -1,13 +1,16 @@
-FROM node:16-alpine as build
+FROM node:18-slim as build
+
+# Install build essentials for node-gyp
+RUN apt-get update && apt-get install -y python3 make g++
 
 WORKDIR /app
 
 # Install curl for downloading face models
-RUN apk add --no-cache curl
+RUN apt-get update && apt-get install -y curl --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 # Copy package files and install dependencies
 COPY package*.json ./
-RUN npm install
+RUN npm install --include=dev && npm cache clean --force
 
 # Copy application code
 COPY . .
@@ -15,16 +18,16 @@ COPY . .
 # Create directory for face models
 RUN mkdir -p public/models
 
-# Download face recognition models
+# Download face recognition models using setup script
 WORKDIR /app/public
-RUN chmod +x ./setup-models.sh && ./setup-models.sh
+RUN chmod +x setup-models.sh && ./setup-models.sh
 WORKDIR /app
 
 # Create .env file with API URL
 RUN echo "VITE_API_URL=http://localhost:8001/api" > .env
 
-# Build the application
-RUN npm run build
+    # Build the application        
+    RUN npm run build -- --mode production && ls -la /app
 
 # Production stage with Nginx
 FROM nginx:alpine

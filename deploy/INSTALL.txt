@@ -1,0 +1,19 @@
+Door Access Control System - Installation Guide
+
+1. Backend Setup:
+   - Navigate to the backend directory
+   - Run: npm install
+   - Configure .env file with your settings
+   - Start the server: npm start
+
+2. Frontend Setup:
+   - Serve the frontend directory with any web server
+   - Configure the tablet to access the frontend URL
+   - For production, set up HTTPS and proper security
+
+3. Initial Configuration:
+   - Access the admin panel at /login
+   - Default credentials are in your .env file
+   - Set up doors and users according to your requirements
+
+For detailed instructions, see README.md

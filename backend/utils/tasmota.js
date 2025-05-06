@@ -1,4 +1,4 @@
-const axios = require('axios');
+const fetch = require('node-fetch');
 
 /**
  * Control a Tasmota switch
@@ -17,11 +17,14 @@ async function toggleTasmotaSwitch(ip, apiKey = '', state) {
       headers['Authorization'] = `Bearer ${apiKey}`;
     }
     
-    const response = await axios.get(url, { headers });
+    const response = await fetch.get(url, { headers });
     return response.data;
   } catch (error) {
-    console.error('Error toggling Tasmota switch:', error);
-    throw error;
+    console.error('Tasmota command failed:', error);
+    return { 
+      error: error.message,
+      stack: error.stack
+    };
   }
 }
 
@@ -57,7 +60,7 @@ async function toggleDoorLock(door) {
       headers['Authorization'] = `Bearer ${door.tasmotaApiKey}`;
     }
     
-    const response = await axios.get(statusUrl, { headers });
+    const response = await fetch.get(statusUrl, { headers });
     const currentState = response.data.POWER === 'ON';
     
     return await toggleTasmotaSwitch(door.tasmotaIp, door.tasmotaApiKey, !currentState);

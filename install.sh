@@ -79,13 +79,16 @@ read -p "Frontend Port [80]: " frontend_port
 frontend_port=${frontend_port:-80}
 
 # Update ports in docker-compose.yml
-sed -i "s|\"8001:8001\"|\"$backend_port:8001\"|g" docker-compose.yml
-sed -i "s|\"80:80\"|\"$frontend_port:80\"|g" docker-compose.yml
+sed -i "s|\( *- \"\)[0-9]\\+:8001\"|\\1$backend_port:8001\"|g" docker-compose.yml
+sed -i "s|\( *- \"\)[0-9]\\+:80\"|\\1$frontend_port:80\"|g" docker-compose.yml
 
 echo ""
 echo -e "${GREEN}Starting Door Access App...${NC}"
 echo "This may take a few minutes for the first run as Docker images are downloaded and built."
 echo ""
+
+# Clean up any existing containers
+docker-compose down -v --remove-orphans
 
 # Start the application with Docker Compose
 docker-compose up -d
